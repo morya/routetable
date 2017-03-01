@@ -10,8 +10,9 @@ using namespace std;
 
 int AddrNode::chidrenCount() {
     int count = 0;
-    for (int i=0; i < MAX_NODE_COUNT; i++  ) {
-        if (NULL != children[i] ) {
+
+    for (int i = 0; i < MAX_NODE_COUNT; i++) {
+        if (NULL != children[i]) {
             count ++;
         }
     }
@@ -32,16 +33,18 @@ CRouteTable::~CRouteTable() {
 
 bool CRouteTable::AddIndex(PCChar firstLevel, PCChar secondLevel, const Handle h) {
     PNode p = NULL;
-    CRouteTable * pLevel2Instance = NULL;
+    CRouteTable *pLevel2Instance = NULL;
     LOG(INFO) << "before search";
     searchAndBuildTree(firstLevel, p);
+
     if (p->handle) {
         LOG(INFO) << "has second level, wonderful";
-        pLevel2Instance = (CRouteTable*)(p->handle);
+        pLevel2Instance = (CRouteTable *)(p->handle);
     } else {
         LOG(INFO) << "no second level, building one";
         pLevel2Instance = new CRouteTable;
     }
+
     if (!pLevel2Instance) {
         return false;
     }
@@ -49,20 +52,25 @@ bool CRouteTable::AddIndex(PCChar firstLevel, PCChar secondLevel, const Handle h
     p->handle = pLevel2Instance;
     Handle old = NULL;
     pLevel2Instance->replaceItem(secondLevel, h, old);
+
     if (old) {
-        LOG(INFO)<< "old instance " << old;
+        LOG(INFO) << "old instance " << old;
     }
+
     return true;
 }
 
 bool CRouteTable::DelIndex(PCChar firstLevel, PCChar secondLevel) {
     PNode p = NULL;
-    CRouteTable * pLevel2Instance = NULL;
+    CRouteTable *pLevel2Instance = NULL;
     searchTree(firstLevel, p);
+
     if (NULL == p || NULL == p->handle) {
         return false;
     }
-    pLevel2Instance = static_cast<CRouteTable*>(p->handle);
+
+    pLevel2Instance = static_cast<CRouteTable *>(p->handle);
+
     if (pLevel2Instance->DelIndex(secondLevel)) {
         return true;
     }
@@ -78,17 +86,21 @@ bool CRouteTable::BestSearch(PCChar firstLevel, PCChar secondLevel, Handle &h) {
 
 bool CRouteTable::FullMatchSearch(PCChar firstLevel, PCChar secondLevel, Handle &h) {
     PNode p = NULL;
-    CRouteTable * pLevel2Instance = NULL;
+    CRouteTable *pLevel2Instance = NULL;
     searchTree(firstLevel, p);
+
     if (NULL == p || NULL == p->handle) {
         return false;
     }
-    pLevel2Instance = (CRouteTable*)(p->handle);
+
+    pLevel2Instance = (CRouteTable *)(p->handle);
     PNode pSecond = NULL;
+
     if (pLevel2Instance->searchTree(secondLevel, pSecond)) {
         h = pSecond->handle;
         return true;
     }
+
     return false;
 }
 
@@ -108,26 +120,31 @@ char CRouteTable::getRouteChar(int arrayIndex) {
     if (arrayIndex <= 0 || arrayIndex >= MAX_NODE_COUNT) {
         return '*';
     }
+
     if (arrayIndex > 0 && arrayIndex < 10) {
         return arrayIndex + '0';
     }
+
     return arrayIndex - 10 + 'A';
 }
 
 int CRouteTable::getArrayIndex(char key) {
     key = toupper(key);
+
     if ('0' <= key && key <= '9') {
         return key - '0';
     } else if ('A' <= key && key <= 'Z') {
         return key - 'A' + 10;
     }
+
     // default one
     return MAX_NODE_COUNT - 1;
 }
 
-bool CRouteTable::replaceItem(PCChar code, Handle h, Handle & old) {
+bool CRouteTable::replaceItem(PCChar code, Handle h, Handle &old) {
     PNode p = NULL;
     searchAndBuildTree(code, p);
+
     if (!p->handle) {
         // replace old
         old = p->handle;
@@ -143,14 +160,17 @@ bool CRouteTable::replaceItem(PCChar code, Handle h, Handle & old) {
 
 bool CRouteTable::DelIndex(PCChar oneLevel) {
     PNode p = NULL;
+
     if (!searchTree(oneLevel, p)) {
-        LOG(INFO)<< "deleting " << oneLevel << " failed.";
+        LOG(INFO) << "deleting " << oneLevel << " failed.";
         return false;
     }
 
     PNode parent = p->parent;
+
     if (parent) {
         int strPos = strlen(oneLevel) - 1;
+
         if (p->chidrenCount() == 0) {
             // leaf node
             parent->children[getArrayIndex(oneLevel[strPos])] = NULL;
@@ -162,16 +182,18 @@ bool CRouteTable::DelIndex(PCChar oneLevel) {
         // this is root
         p->handle = NULL;
     }
+
     return true;
 }
 
-bool CRouteTable::searchTree(PCChar code, PNode & node) {
+bool CRouteTable::searchTree(PCChar code, PNode &node) {
     int i = 0;
     int len = strlen(code);
     PNode p = m_head;
 
     while (i < len) {
         int nodeIdx = getArrayIndex(code[i]);
+
         if (p->children[nodeIdx]) {
             p = p->children[nodeIdx];
             i++;
@@ -184,7 +206,7 @@ bool CRouteTable::searchTree(PCChar code, PNode & node) {
     return true;
 }
 
-bool CRouteTable::searchAndBuildTree(PCChar code, PNode & node) {
+bool CRouteTable::searchAndBuildTree(PCChar code, PNode &node) {
     int i = 0;
     int nodeIdx = 0;
     int len = strlen(code);
@@ -192,6 +214,7 @@ bool CRouteTable::searchAndBuildTree(PCChar code, PNode & node) {
 
     while (i < len) {
         nodeIdx = getArrayIndex(code[i]);
+
         if (p->children[nodeIdx]) {
             p = p->children[nodeIdx];
             i++;
