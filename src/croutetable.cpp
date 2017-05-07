@@ -13,12 +13,13 @@ int AddrNode::chidrenCount() {
 
     for (int i = 0; i < MAX_NODE_COUNT; i++) {
         if (NULL != children[i]) {
-            count ++;
+            count++;
         }
     }
 
     return count;
 }
+
 CRouteTable::CRouteTable() {
     m_nodeCount = 0;
     m_head = new AddrNode;
@@ -34,11 +35,11 @@ CRouteTable::~CRouteTable() {
 bool CRouteTable::AddIndex(PCChar firstLevel, PCChar secondLevel, const Handle h) {
     PNode p = NULL;
     CRouteTable *pLevel2Instance = NULL;
-    LOG(INFO) << "before search";
+    LOG(INFO)<< "before search";
     searchAndBuildTree(firstLevel, p);
 
     if (p->handle) {
-        LOG(INFO) << "has second level, wonderful";
+        LOG(INFO)<< "has second level, wonderful";
         pLevel2Instance = (CRouteTable *)(p->handle);
     } else {
         LOG(INFO) << "no second level, building one";
@@ -54,7 +55,7 @@ bool CRouteTable::AddIndex(PCChar firstLevel, PCChar secondLevel, const Handle h
     pLevel2Instance->replaceItem(secondLevel, h, old);
 
     if (old) {
-        LOG(INFO) << "old instance " << old;
+        LOG(INFO)<< "old instance " << old;
     }
 
     return true;
@@ -93,7 +94,7 @@ bool CRouteTable::FullMatchSearch(PCChar firstLevel, PCChar secondLevel, Handle 
         return false;
     }
 
-    pLevel2Instance = (CRouteTable *)(p->handle);
+    pLevel2Instance = (CRouteTable *) (p->handle);
     PNode pSecond = NULL;
 
     if (pLevel2Instance->searchTree(secondLevel, pSecond)) {
@@ -162,7 +163,7 @@ bool CRouteTable::DelIndex(PCChar oneLevel) {
     PNode p = NULL;
 
     if (!searchTree(oneLevel, p)) {
-        LOG(INFO) << "deleting " << oneLevel << " failed.";
+        LOG(INFO)<< "deleting " << oneLevel << " failed.";
         return false;
     }
 
@@ -220,7 +221,7 @@ bool CRouteTable::searchAndBuildTree(PCChar code, PNode &node) {
             i++;
         } else {
             for (; i < len; i++) {
-                m_nodeCount ++;
+                m_nodeCount++;
                 PNode tmpNode = NewNode();
                 tmpNode->parent = p;
                 nodeIdx = getArrayIndex(code[i]);

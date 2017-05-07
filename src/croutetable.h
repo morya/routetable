@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 
+// 10: 0-9
+// 26: A-Z
+// 1: anything else
 const int MAX_NODE_COUNT = (10 + 26 + 1);
 
 typedef void *Handle;
