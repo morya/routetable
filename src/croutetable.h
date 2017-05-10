@@ -48,4 +48,11 @@ class CRouteTable {
         AddrNode *m_head;
 };
 
+
+template <typename VALUE>
+class CPartricia {
+public:
+    CPartricia(){}
+};
+
 #endif /* CROUTETABLE_H_ */

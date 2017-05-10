@@ -187,20 +187,20 @@ bool CRouteTable::DelIndex(PCChar oneLevel) {
     return true;
 }
 
-bool CRouteTable::searchTree(PCChar code, PNode &node) {
-    int i = 0;
-    int len = strlen(code);
+bool CRouteTable::searchTree(PCChar addr, PNode &node) {
     PNode p = m_head;
+    PCChar pAddr = addr;
 
-    while (i < len) {
-        int nodeIdx = getArrayIndex(code[i]);
+    while (*pAddr) {
+        LOG(INFO)<<"pAddr = " << *pAddr;
+        int nodeIdx = getArrayIndex(*pAddr);
 
         if (p->children[nodeIdx]) {
             p = p->children[nodeIdx];
-            i++;
         } else {
             return false;
         }
+        pAddr++;
     }
 
     node = p;

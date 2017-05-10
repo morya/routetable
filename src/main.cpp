@@ -21,6 +21,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
+
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -44,20 +45,20 @@ int main(int ac, char **av) {
     using std::endl;
     using std::auto_ptr;
 
-    Entity *acc = new Entity;
-    CRouteTable *p = new CRouteTable;
+    Entity *pEntity = new Entity;
+    std::unique_ptr<CRouteTable> p(new CRouteTable);
+    std::unique_ptr<Entity> pPtrEntity(pEntity);
     LOG(INFO) << "adding " << p;
 
-    const char *keyOne = "111";
-    p->AddIndex("111", "", (Handle &) acc);
-    p->AddIndex("121", "", (Handle &) acc);
-    p->AddIndex("1qq", "", (Handle &) acc);
-    p->AddIndex("133", "", (Handle &) acc);
+    p->AddIndex("111", "123", (Handle &) pEntity);
+    p->AddIndex("121", "123", (Handle &) pEntity);
+    p->AddIndex("1qq", "123", (Handle &) pEntity);
+    p->AddIndex("133", "123", (Handle &) pEntity);
 
     LOG(INFO) << "add index finish";
-    Entity *pSearch = NULL;
+    Handle pSearch = NULL;
 
-    if (p->FullMatchSearch(keyOne, "", (Handle &) pSearch)) {
+    if (p->FullMatchSearch("111", "123", pSearch)) {
         LOG(INFO) << "searched " << pSearch;
     } else {
         LOG(INFO) << "this is huge, you better check it out....";
